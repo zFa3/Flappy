@@ -1,11 +1,14 @@
+#!usr/bin/env python3
 import tkinter as tk
 import random as rd
+import time as tm
 
 
 root = tk.Tk()
 side_length = 500 # in pixels
 root.geometry(f"{side_length}x{side_length}")
 gameCanvas = tk.Canvas(root, width=side_length, height=side_length)
+FPS = 15
 
 ############################# Bird #############################
 
@@ -14,7 +17,7 @@ gameCanvas = tk.Canvas(root, width=side_length, height=side_length)
 bird = [side_length//2, 0]
 
 # pixels
-birdRadius = 75
+birdRadius = 25
 
 # color in hexadecimal format(hex)
 birdColor = "#FDFD00"
@@ -22,7 +25,7 @@ birdColor = "#FDFD00"
 ############################# Pipes #############################
 
 # higher is faster
-pipeSpeed = 1
+pipeSpeed = 5
 
 # measured in pixels
 pipeWidth = 75
@@ -48,15 +51,22 @@ def click(event):
     pass
 
 def gameloop():
+    global pipes
     while 1:
+        tm.sleep(1/FPS)
+        remove = False
         draw()
         for i in range(len(pipes)):
             if not pipes[i][0] < 0:
                 pipes[i] = [pipes[i][0] - pipeSpeed, pipes[i][1], pipes[i][2]]
+            else:
+                remove = True
+        if remove:
+            pipes.pop(0)
         if len(pipes) < 2:
-            seed1 = rd.randint(0, int(side_length*3/4))
+            seed1 = rd.randint(0, int(side_length*5/8))
             seed2 = rd.randint(0, 1)
-            pipes.append([side_length, seed1, seed2])
+            pipes.append([side_length, seed1 - birdRadius * 4, seed2])
             pipes.append([side_length, side_length - (seed1), not seed2])
         
 
