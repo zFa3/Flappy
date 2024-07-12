@@ -9,10 +9,10 @@ import time as tm
 root = tk.Tk()
 side_length = 500 # in pixels
 root.geometry(f"{side_length}x{side_length}")
-gameCanvas = tk.Canvas(root, width=side_length, height=side_length)
+gameCanvas = tk.Canvas(root, width=side_length, height=side_length, background="#88EEFF")
 
 FPS = 30
-gameOver = False
+gameOver = [True, True]
 score = 0
 
 ############################# Bird #############################
@@ -59,12 +59,15 @@ pipes = [[50, 50, True], [50, 50, False]]
 ##################################################################
 
 def click(event):
-    global bird
+    global bird, gameOver
     bird[1] = birdRadius * 1.25
+    if gameOver[1]:
+        gameOver = [False, False]
+        gameloop()
 
 def gameloop():
     global pipes, score, gameOver
-    while not gameOver:
+    while not gameOver[0]:
         tm.sleep(1/FPS)
         remove = False; draw()
         for i in range(len(pipes)):
@@ -86,13 +89,14 @@ def gameloop():
         if bird[0] - birdRadius < 0 or bird[0] + birdRadius > side_length or ((bird[0] + birdRadius > abs(side_length - (list(sorted([(item[0], item[1]) for item in pipes if not item[2]], key = lambda x:x[0])))[0][1])) and birdX > (list(sorted([item[0] for item in pipes if not item[2]])))[0]) or\
             ((bird[0] - birdRadius < (list(sorted([(item[0], item[1]) for item in pipes if item[2]], key = lambda x:x[0])))[0][1])) and birdX > (list(sorted([item[0] for item in pipes if item[2]])))[0]:
             print(f"You got a score of: {score}")
-            gameOver = True; draw()
+            gameOver = [True, False]; draw()
             tm.sleep(1.5)
             root.destroy()
 
 def draw(): # draws image to canvas every frame
     gameCanvas.delete("all")
-
+    if gameOver[1]:
+        gameCanvas.create_text(side_length//2, side_length//2, text="Click to Play", font = ("Arial", 40))
     for i in pipes:
         # if the pipe is located
         #  on the top or bottom
@@ -116,5 +120,4 @@ root.bind("<Button-1>", click)
 root.bind("<space>", click)
 
 draw()
-gameloop()
 root.mainloop()
