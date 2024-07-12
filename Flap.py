@@ -8,7 +8,7 @@ root = tk.Tk()
 side_length = 500 # in pixels
 root.geometry(f"{side_length}x{side_length}")
 gameCanvas = tk.Canvas(root, width=side_length, height=side_length)
-FPS = 15
+FPS = 20
 
 ############################# Bird #############################
 
@@ -22,6 +22,11 @@ birdRadius = 25
 # color in hexadecimal format(hex)
 birdColor = "#FDFD00"
 
+# recommended around 0.95
+gravity = 0.97
+# the lower the number
+# the more "floaty"
+floatiness = 0.2
 ############################# Pipes #############################
 
 # higher is faster
@@ -48,7 +53,8 @@ pipes = [[50, 50, True], [50, 50, False]]
 ##################################################################
 
 def click(event):
-    pass
+    global bird
+    bird[1] = birdRadius
 
 def gameloop():
     global pipes
@@ -68,7 +74,11 @@ def gameloop():
             seed2 = rd.randint(0, 1)
             pipes.append([side_length, seed1 - birdRadius * 4, seed2])
             pipes.append([side_length, side_length - (seed1), not seed2])
-        
+        bird[0] = bird[0] * (2 - gravity)
+        bird[0] -= bird[1]
+        bird[1] *= (gravity - floatiness)
+        if bird[0] + birdRadius < 0 or bird[0] - birdRadius > side_length:
+            print("GAME OVER")
 
 def draw(): # draws image to canvas every frame
     gameCanvas.delete("all")
