@@ -1,4 +1,6 @@
 #!usr/bin/env python3
+# zFa3 - Flap.py
+
 import tkinter as tk
 import random as rd
 import time as tm
@@ -9,7 +11,7 @@ side_length = 500 # in pixels
 root.geometry(f"{side_length}x{side_length}")
 gameCanvas = tk.Canvas(root, width=side_length, height=side_length)
 
-FPS = 20
+FPS = 30
 gameOver = False
 score = 0
 
@@ -24,15 +26,16 @@ birdRadius = 25
 
 # color in hexadecimal format(hex)
 birdColor = "#FDFD00"
+birdBeakColor = "#FDCD00"
 
 # Recommended around 0.95
-gravity = 0.97
+gravity = 0.93
 # Lower the number, higher the "floatiness"
-floatiness = 0.2
+floatiness = 0.1
 ############################# Pipes #############################
 
 # higher is faster
-pipeSpeed = 10
+pipeSpeed = 5
 
 # measured in pixels
 pipeWidth = 75
@@ -102,7 +105,9 @@ def draw(): # draws image to canvas every frame
             gameCanvas.create_rectangle(i[0], side_length, i[0] + pipeWidth, side_length - i[1], fill = pipeColor)
             gameCanvas.create_rectangle(i[0] - pipeMouthWidth, side_length - i[1], i[0] + pipeWidth + pipeMouthWidth, side_length - i[1] - pipeMouthHeight, fill = pipeMouthColor)
 
+    gameCanvas.create_oval(birdX - birdRadius//2+(birdRadius//4), bird[0] - birdRadius//4, birdX + birdRadius//2+(birdRadius//4), bird[0] + birdRadius//4, fill = birdBeakColor)
     gameCanvas.create_oval(birdX - birdRadius//2, bird[0] - birdRadius//2, birdX + birdRadius//2, bird[0] + birdRadius//2, fill = birdColor)
+    gameCanvas.create_oval(birdX - birdRadius//3, bird[0] - birdRadius//4, birdX + birdRadius//3, bird[0] + birdRadius//4, fill = birdColor)
 
     gameCanvas.update()
     gameCanvas.pack()
